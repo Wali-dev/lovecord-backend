@@ -1,43 +1,26 @@
-from pymongo import MongoClient
-from config import Config
-from jsonschema import validate, ValidationError
+from config import mongo
 
-class SongModel:
-    def __init__(self):
-        try:
-            self.client = MongoClient(Config.MONGO_URI)
-            self.db = self.client[Config.MONGO_DB_NAME]
-            self.songs_collection = self.db["post"]
+class Message:
+    def __init__(self, recipient, message, songurl):
+        self.recipient = recipient
+        self.message = message
+        self.songurl = songurl
 
-            self.post_schema = {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "string", "required": True},
-                    "recipient_name": {"type": "string", "required": True},
-                    "message": {"type": "string"},
-                    "song_url": {"type": "string", "required": True},
-                },
-                "required": ["user_id", "recipient_name", "song_name"],
-                "additionalProperties": False  
-            }
-            print("Successfully connected to MongoDB and schema loaded!")
-        except Exception as e:
-            print(f"Error initializing SongModel: {e}")
-            raise  
+    def save(self):
+        message_collection = mongo.db.messages
+        message_data = {
+            "recipient": self.recipient,
+            "message": self.message,
+            "songurl": self.songurl
+        }
+        message_collection.insert_one(message_data)
 
-    def save_song(self, song_data):
-        try:
-            validate(instance=song_data, schema=self.song_schema)
-            return self.songs_collection.insert_one(song_data)
-        except ValidationError as e:
-            print(f"Schema validation error: {e}")
-            raise
-        except Exception as e:
-            print(f"Database error: {e}")
-            raise
-        
-        
-    def close_connection(self):
-        if self.client:
-            self.client.close()
-            print("MongoDB connection closed.")
+    @staticmethod
+    def find_by_recipient(recipient):
+        message_collection = mongo.db.messages
+        return message_collection.find({"recipient": recipient})
+
+    @staticmethod
+    def find_by_id(id):
+        message_collection = mongo.db.messages
+        return message_collection.find_one({"_id": id})  
