@@ -3,11 +3,13 @@ from config import init_db, mongo
 from model import MessagePost
 from bson.objectid import ObjectId
 import random
+from flask_cors import CORS
 
 app = Flask(__name__)
 
 # Initialize the database connection
 init_db(app)
+CORS(app)
 
 
 @app.route('/message', methods=['POST'])
