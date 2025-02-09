@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from config import init_db, mongo
 from model import MessagePost
@@ -123,4 +124,5 @@ def get_random_messages():
     
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
