@@ -18,7 +18,7 @@ def create_message():
     data = request.json
     
     # Validate required fields
-    required_fields = ['recipient', 'message', 'songurl']
+    required_fields = ['recipient', 'message', 'songurl', 'songname', 'songimage']
     if not all(key in data for key in required_fields):
         return jsonify({"error": "Missing required fields"}), 400
     
@@ -27,12 +27,16 @@ def create_message():
         message_data = {
             "recipient": data['recipient'],
             "message": data['message'],
-            "songurl": data['songurl']
+            "songurl": data['songurl'],
+            "songname": data['songname'],
+            "songimgae": data['songimage']
         }
         
         # Add recipient_email only if it's present
         if 'recipient_email' in data:
             message_data['recipient_email'] = data['recipient_email']
+        if 'recipient_number' in data:
+            message_data['recipient_number'] = data['recipient_number']
         
         # Insert into database
         result = mongo.db.messages.insert_one(message_data)
