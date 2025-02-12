@@ -1,3 +1,4 @@
+import datetime
 from config import mongo
 
 class MessagePost:
@@ -9,6 +10,7 @@ class MessagePost:
         self.songimage = songimage
         self.recipient_email = recipient_email
         self.recipient_number = recipient_number
+        self.createdAt = datetime.utcnow()
 
 
     def save(self):
@@ -20,7 +22,8 @@ class MessagePost:
             "songname": self.songname,
             "songimage": self.songimage,
             "recipient_email": self.recipient_email,
-            "recipient_number": self.recipient_number
+            "recipient_number": self.recipient_number,
+            "createdAt": self.createdAt
         }
         message_collection.insert_one(message_data)
 
