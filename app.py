@@ -1,3 +1,4 @@
+import datetime
 import os
 from flask import Flask, request, jsonify
 from config import init_db, mongo
@@ -29,7 +30,8 @@ def create_message():
             "message": data['message'],
             "songurl": data['songurl'],
             "songname": data['songname'],
-            "songimgae": data['songimage']
+            "songimgae": data['songimage'],
+            "createdAt": datetime.utcnow()
         }
         
         # Add recipient_email only if it's present
@@ -64,6 +66,8 @@ def get_message_by_id(id):
        if message:
            # Convert ObjectId to string for JSON serialization
            message['_id'] = str(message['_id'])
+           if 'createdAt' in message:
+               message['createdAt'] = message['createdAt'].isoformat()  # Convert to string for JSON
            return jsonify(message), 200
        else:
            return jsonify({"error": "Message not found"}), 404
