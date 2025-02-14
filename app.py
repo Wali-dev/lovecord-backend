@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 import os
 from flask import Flask, request, jsonify
 from config import init_db, mongo
@@ -31,7 +31,7 @@ def create_message():
             "songurl": data['songurl'],
             "songname": data['songname'],
             "songimgae": data['songimage'],
-            "createdAt": datetime.utcnow()
+            "createdAt": datetime.now(timezone.utc)
         }
         
         # Add recipient_email only if it's present
@@ -40,6 +40,7 @@ def create_message():
         if 'recipient_number' in data:
             message_data['recipient_number'] = data['recipient_number']
         
+        print (message_data)
         # Insert into database
         result = mongo.db.messages.insert_one(message_data)
 

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 from config import mongo
 
 class MessagePost:
@@ -10,7 +10,7 @@ class MessagePost:
         self.songimage = songimage
         self.recipient_email = recipient_email
         self.recipient_number = recipient_number
-        self.createdAt = datetime.utcnow()
+        self.createdAt = datetime.now(timezone.utc)
 
 
     def save(self):
