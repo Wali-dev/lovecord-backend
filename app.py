@@ -119,8 +119,8 @@ def get_random_messages():
         messages = list(mongo.db.messages.find())
         
         # If there are more than 50 messages, randomly sample 50
-        if len(messages) > 50:
-            messages = random.sample(messages, 50)
+        if len(messages) > 21:
+            messages = random.sample(messages, 21)
 
         # Convert ObjectId to string for JSON serialization
         for message in messages:
